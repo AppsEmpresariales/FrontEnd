@@ -1,0 +1,94 @@
+<div class="min-h-screen bg-gray-100">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex">
+          <div class="flex-shrink-0 flex items-center">
+            <span [ngStyle]="{'color': themeColor}" class="font-bold text-xl tracking-tight">MI APP EMPRESARIAL</span>
+          </div>
+        </div>
+        <div class="flex items-center">
+          @if (user()) {
+            <span class="text-gray-700 mr-4 text-sm font-medium">Hola, {{ user()?.name }}</span>
+            <button (click)="logout()" class="text-sm text-red-600 hover:text-red-800 font-medium">Cerrar sesión</button>
+          }
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    
+    <!-- User Role Badge Demo with @switch -->
+    <div class="mb-6 bg-white shadow rounded-lg p-4">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Tu Perfil Actual:</h3>
+      
+      @switch (user()?.role) {
+        @case ('admin') {
+          <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+            Administrador del Sistema
+          </span>
+          <p class="mt-2 text-sm text-gray-500">Tienes acceso a todas las configuraciones.</p>
+        }
+        @case ('editor') {
+          <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+            Editor
+          </span>
+          <p class="mt-2 text-sm text-gray-500">Puedes modificar y crear nuevo contenido.</p>
+        }
+        @default {
+          <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+            Usuario Estándar
+          </span>
+          <p class="mt-2 text-sm text-gray-500">Acceso básico de lectura a los proyectos.</p>
+        }
+      }
+    </div>
+
+    <!-- Project List Demo with @for and ngClass -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+      <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          Proyectos Recientes
+        </h3>
+      </div>
+      <ul role="list" class="divide-y divide-gray-200">
+        
+        @for (project of projects; track project.id; let i = $index) {
+          <li>
+            <div class="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-indigo-600 truncate">
+                  {{ i + 1 }}. {{ project.name }}
+                </p>
+                <div class="ml-2 flex-shrink-0 flex">
+                  <!-- ngClass dynamically sets the badge color based on status -->
+                  <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800': project.status === 'completed',
+                      'bg-yellow-100 text-yellow-800': project.status === 'pending',
+                      'bg-blue-100 text-blue-800': project.status === 'active'
+                    }">
+                    {{ project.status | uppercase }}
+                  </p>
+                </div>
+              </div>
+              <div class="mt-2 sm:flex sm:justify-between">
+                <div class="sm:flex">
+                  <p class="flex items-center text-sm text-gray-500">
+                    Progreso: {{ project.progress }}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        } @empty {
+          <li class="px-4 py-8 text-center text-sm text-gray-500">
+            No hay proyectos disponibles en este momento.
+          </li>
+        }
+
+      </ul>
+    </div>
+  </main>
+</div>

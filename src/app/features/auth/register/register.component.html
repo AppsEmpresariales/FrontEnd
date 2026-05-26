@@ -1,0 +1,165 @@
+<div class="auth-container">
+  <div class="auth-box auth-box--wide">
+    <div class="auth-header">
+      <div class="auth-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <path d="M14 2v6h6"/>
+        </svg>
+        DocuCloud
+      </div>
+      <h2 class="auth-title">Registrar organización</h2>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="auth-error">
+        {{ errorMessage() }}
+      </div>
+    }
+    @if (successMessage()) {
+      <div class="auth-success">
+        {{ successMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="auth-section">
+        <h3>Administrador</h3>
+        <div class="auth-grid">
+          <div class="form-group">
+            <input
+              id="cedula"
+              type="number"
+              formControlName="cedula"
+              [ngClass]="{'is-invalid': isFieldInvalid('cedula')}"
+              class="form-control"
+              placeholder="Cédula de ciudadanía">
+
+            @if (isFieldInvalid('cedula')) {
+              <span class="invalid-feedback">La cédula es requerida.</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <input
+              id="name"
+              type="text"
+              formControlName="nombre"
+              [ngClass]="{'is-invalid': isFieldInvalid('nombre')}"
+              class="form-control"
+              placeholder="Nombre completo">
+
+            @if (isFieldInvalid('nombre')) {
+              <span class="invalid-feedback">El nombre es requerido (min. 3 letras).</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <input
+              id="email-address"
+              type="email"
+              formControlName="email"
+              [ngClass]="{'is-invalid': isFieldInvalid('email')}"
+              class="form-control"
+              placeholder="Correo electrónico">
+
+            @if (isFieldInvalid('email')) {
+              <span class="invalid-feedback">El correo es requerido y debe ser válido.</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              [ngClass]="{'is-invalid': isFieldInvalid('password')}"
+              class="form-control"
+              placeholder="Contraseña">
+
+            @if (isFieldInvalid('password')) {
+              <span class="invalid-feedback">Mínimo 8 caracteres.</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-section">
+        <h3>Organización</h3>
+        <div class="auth-grid">
+          <div class="form-group">
+            <input
+              type="number"
+              formControlName="organizacionNit"
+              [ngClass]="{'is-invalid': isFieldInvalid('organizacionNit')}"
+              class="form-control"
+              placeholder="NIT">
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              formControlName="organizacionNombre"
+              [ngClass]="{'is-invalid': isFieldInvalid('organizacionNombre')}"
+              class="form-control"
+              placeholder="Nombre de la organización">
+          </div>
+
+          <div class="form-group">
+            <input
+              type="email"
+              formControlName="organizacionEmail"
+              [ngClass]="{'is-invalid': isFieldInvalid('organizacionEmail')}"
+              class="form-control"
+              placeholder="Correo de contacto">
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              formControlName="organizacionTelefono"
+              class="form-control"
+              placeholder="Teléfono">
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              formControlName="organizacionDirCalle"
+              class="form-control"
+              placeholder="Calle o carrera">
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              formControlName="organizacionDirNumero"
+              class="form-control"
+              placeholder="Número">
+          </div>
+
+          <div class="form-group auth-grid__full">
+            <input
+              type="text"
+              formControlName="organizacionDirComuna"
+              class="form-control"
+              placeholder="Comuna / ciudad">
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <div class="spinner"></div>
+          Registrando...
+        } @else {
+          CREAR ORGANIZACIÓN
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      ¿Ya tienes cuenta? <a routerLink="/login" class="auth-link">Inicia sesión</a>
+    </div>
+  </div>
+</div>
