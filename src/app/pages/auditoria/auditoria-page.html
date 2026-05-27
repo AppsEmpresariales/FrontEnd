@@ -1,0 +1,22 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Auditoría"
+    title="Historial y trazabilidad"
+    description="Consulta acciones sobre documentos, cambios de estado y actividad por usuario."
+    actionLabel="Exportar"
+    actionIcon="download"
+    (action)="exportar()"
+  ></app-section-header>
+
+  <div class="toolbar">
+    <app-search-bar placeholder="Buscar por acción, documento, usuario o estado" [value]="term()" (search)="search($event)"></app-search-bar>
+    <app-button label="Rango de fechas" icon="date_range" variant="ghost"></app-button>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [rows]="rows()"
+    emptyTitle="Sin registros"
+    emptyMessage="No hay eventos de auditoría para los filtros actuales."
+  ></app-data-table>
+</section>

@@ -1,0 +1,24 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Tareas"
+    title="Bandeja de aprobación"
+    description="Revisa tareas pendientes, documentos asignados y estados de avance dentro del flujo."
+    actionLabel="Actualizar"
+    actionIcon="refresh"
+    (action)="loadTareas()"
+  ></app-section-header>
+
+  <div class="toolbar">
+    <app-search-bar placeholder="Buscar por documento, paso, usuario o estado" [value]="term()" (search)="search($event)"></app-search-bar>
+    <app-button label="Actualizar" icon="refresh" variant="ghost" (btnClick)="loadTareas()"></app-button>
+  </div>
+
+  <app-data-table
+    [columns]="columns"
+    [rows]="rows()"
+    emptyTitle="Sin tareas"
+    emptyMessage="No hay tareas pendientes para el usuario seleccionado."
+    (edit)="completarTarea($event)"
+    (delete)="cancelarTarea($event)"
+  ></app-data-table>
+</section>

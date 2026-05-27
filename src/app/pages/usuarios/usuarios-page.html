@@ -1,0 +1,73 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Usuarios"
+    title="Gestión de usuarios y roles"
+    description="Administra accesos por organización, mantiene usuarios activos y prepara asignaciones de rol."
+    actionLabel="Crear usuario"
+    actionIcon="person_add"
+    (action)="togglePanel()"
+  ></app-section-header>
+
+  <div class="toolbar">
+    <app-search-bar placeholder="Buscar por nombre, correo, cédula o estado" [value]="term()" (search)="search($event)"></app-search-bar>
+    <app-button label="Roles" icon="admin_panel_settings" variant="secondary"></app-button>
+  </div>
+
+  <div class="content-grid">
+    <app-data-table
+      [columns]="columns"
+      [rows]="rows()"
+      emptyTitle="Sin usuarios"
+      emptyMessage="No se encontraron usuarios para la organizacion."
+      (view)="editUser($event)"
+      (edit)="editUser($event)"
+      (delete)="toggleStatus($event)"
+    ></app-data-table>
+
+    @if (isPanelOpen()) {
+      <aside class="panel">
+        <header class="panel__header">
+          <div>
+            <h2>{{ isEditing() ? 'Editar usuario' : 'Crear usuario' }}</h2>
+            <p>El backend encripta la contraseña con BCrypt.</p>
+          </div>
+          <app-button icon="close" variant="ghost" size="sm" (btnClick)="togglePanel()"></app-button>
+        </header>
+        <form class="panel__body form-grid" [formGroup]="userForm" (ngSubmit)="saveUser()">
+          <div class="form-group">
+            <label>Cédula</label>
+            <input type="number" class="form-control" formControlName="cedula" placeholder="1002456789">
+          </div>
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" placeholder="Nombre completo">
+          </div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" class="form-control" formControlName="email" placeholder="usuario@empresa.com">
+          </div>
+          <div class="form-group">
+            <label>Contraseña {{ isEditing() ? '(opcional)' : '' }}</label>
+            <input type="password" class="form-control" formControlName="password" placeholder="Mínimo 8 caracteres">
+          </div>
+          <div class="form-group">
+            <label>Rol del usuario</label>
+            <select class="form-control" formControlName="rolId">
+              <option [ngValue]="null">Seleccione un rol...</option>
+              @for (rol of roles(); track rol.id) {
+                <option [ngValue]="rol.id">{{ rol.nombre }}</option>
+              }
+            </select>
+          </div>
+          <app-button 
+            [label]="isEditing() ? 'Guardar Cambios' : 'Crear Usuario'" 
+            [icon]="isEditing() ? 'save' : 'person_add'" 
+            variant="success" 
+            type="submit" 
+            [disabled]="isSaving() || userForm.invalid"
+          ></app-button>
+        </form>
+      </aside>
+    }
+  </div>
+</section>
