@@ -1,0 +1,166 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Sistema"
+    title="Configuración DocuCloud"
+    description="Parametriza estados, plantillas de correo y revisa los tokens visuales definidos para la interfaz."
+  ></app-section-header>
+
+  <div class="content-grid">
+    <article class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Estados de documento</h2>
+          <p>Define el ciclo: creado, revisión, aprobado o rechazado.</p>
+        </div>
+        <app-button label="Actualizar" icon="refresh" variant="ghost" size="sm" (btnClick)="loadConfiguracion()"></app-button>
+      </header>
+      <div class="panel__body">
+        <form class="form-grid" [formGroup]="estadoForm" (ngSubmit)="saveEstado()">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input class="form-control" formControlName="nombre" placeholder="Ej. En revisión">
+          </div>
+          <div class="form-group">
+            <label>Color</label>
+            <input class="form-control" type="color" formControlName="color">
+          </div>
+          <label class="check-row">
+            <input type="checkbox" formControlName="esInicial">
+            Estado inicial
+          </label>
+          <label class="check-row">
+            <input type="checkbox" formControlName="esFinal">
+            Estado final
+          </label>
+          <app-button label="Crear estado" icon="flag" variant="success" type="submit" [disabled]="estadoForm.invalid || isSavingEstado()"></app-button>
+        </form>
+
+        <div class="config-list">
+          @for (estado of estados(); track estado.id) {
+            <article class="config-row">
+              <span class="state-dot" [style.background]="estado.color || 'var(--color-info)'"></span>
+              <div>
+                <strong>{{ estado.nombre }}</strong>
+                <small>{{ estado.esInicial ? 'Inicial' : '' }} {{ estado.esFinal ? 'Final' : '' }}</small>
+              </div>
+            </article>
+          } @empty {
+            <p class="muted">Crea al menos un estado inicial para poder registrar documentos.</p>
+          }
+        </div>
+      </div>
+    </article>
+
+    <aside class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Plantillas de correo</h2>
+          <p>Mensajes reutilizables para eventos del flujo.</p>
+        </div>
+      </header>
+      <div class="panel__body">
+        <form class="form-grid" [formGroup]="plantillaForm" (ngSubmit)="savePlantilla()">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input class="form-control" formControlName="nombre" placeholder="Documento creado">
+          </div>
+          <div class="form-group">
+            <label>Evento</label>
+            <select class="form-control" formControlName="tipoEvento">
+              @for (evento of eventos; track evento) {
+                <option [ngValue]="evento">{{ evento }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Asunto</label>
+            <input class="form-control" formControlName="asunto" placeholder="Nuevo evento en DocuCloud">
+          </div>
+          <div class="form-group">
+            <label>Cuerpo</label>
+            <textarea class="form-control" formControlName="cuerpo" rows="3" placeholder="Hola, tienes una actualización pendiente."></textarea>
+          </div>
+          <app-button label="Crear plantilla" icon="mail" variant="success" type="submit" [disabled]="plantillaForm.invalid || isSavingPlantilla()"></app-button>
+        </form>
+
+        <div class="config-list">
+          @for (plantilla of plantillas(); track plantilla.id) {
+            <article class="config-row">
+              <app-icon name="mail" color="var(--color-info)" [size]="22"></app-icon>
+              <div>
+                <strong>{{ plantilla.nombre }}</strong>
+                <small>{{ plantilla.tipoEvento }} - {{ plantilla.activo ? 'Activa' : 'Inactiva' }}</small>
+              </div>
+            </article>
+          } @empty {
+            <p class="muted">Sin plantillas configuradas.</p>
+          }
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <article class="panel">
+    <header class="panel__header">
+      <div>
+        <h2>Paleta DocuCloud</h2>
+        <p>Colores definidos en la documentación de diseño.</p>
+      </div>
+      <app-badge label="Azul profesional" tone="primary"></app-badge>
+    </header>
+    <div class="panel__body token-grid">
+      @for (color of colors; track color.value) {
+        <div class="color-token">
+          <span class="color-token__swatch" [style.background]="color.value"></span>
+          <strong>{{ color.name }}</strong>
+          <span>{{ color.value }}</span>
+          <p>{{ color.usage }}</p>
+        </div>
+      }
+    </div>
+  </article>
+
+  <div class="content-grid">
+    <article class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Endpoints base</h2>
+          <p>{{ apiUrl }}</p>
+        </div>
+      </header>
+      <div class="panel__body endpoint-grid">
+        @for (endpoint of endpoints; track endpoint.path) {
+          <div class="endpoint-card">
+            <app-icon [name]="endpoint.icon" color="var(--color-primary)" [size]="24"></app-icon>
+            <div>
+              <strong>{{ endpoint.name }}</strong>
+              <span>{{ endpoint.path }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+
+    <aside class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Tipografía e íconos</h2>
+          <p>Lineamientos aplicados en componentes.</p>
+        </div>
+      </header>
+      <div class="panel__body typography-sample">
+        <h1>Montserrat H1</h1>
+        <h2>Montserrat H2</h2>
+        <h3>Montserrat H3</h3>
+        <p>Roboto se usa para párrafos, tablas, formularios y botones.</p>
+        <div class="icon-sample">
+          <app-icon name="menu" color="var(--color-primary)" [size]="24"></app-icon>
+          <app-icon name="upload_file" color="var(--color-primary)" [size]="22"></app-icon>
+          <app-icon name="delete" color="var(--color-error)" [size]="20"></app-icon>
+          <app-icon name="check_circle" color="var(--color-success)" [size]="22"></app-icon>
+          <app-icon name="warning" color="var(--color-warning)" [size]="22"></app-icon>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>

@@ -1,0 +1,55 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Configuración"
+    title="Tipos documentales"
+    description="Gestiona los tipos de documentos soportados, su descripción y disponibilidad."
+    actionLabel="Crear tipo"
+    actionIcon="add"
+    (action)="togglePanel()"
+  ></app-section-header>
+
+  <div class="toolbar">
+    <app-search-bar placeholder="Buscar por nombre, descripción o estado" [value]="term()" (search)="search($event)"></app-search-bar>
+    <app-button label="Actualizar" icon="refresh" variant="ghost" (btnClick)="loadTipos()"></app-button>
+  </div>
+
+  <div class="content-grid">
+    <app-data-table
+      [columns]="columns"
+      [rows]="rows()"
+      emptyTitle="Sin tipos documentales"
+      emptyMessage="No se encontraron tipos documentales para la organización."
+      (edit)="editTipo($event)"
+      (delete)="toggleEstado($event)"
+    ></app-data-table>
+
+    @if (isPanelOpen()) {
+      <aside class="panel">
+        <header class="panel__header">
+          <div>
+            <h2>{{ isEditing() ? 'Editar tipo documental' : 'Crear tipo documental' }}</h2>
+            <p>Define la categoría que usarán los documentos.</p>
+          </div>
+          <app-button icon="close" variant="ghost" size="sm" (btnClick)="togglePanel()"></app-button>
+        </header>
+
+        <form class="panel__body form-grid" [formGroup]="typeForm" (ngSubmit)="saveTipo()">
+          @if (errorMessage()) {
+            <div class="inline-error">{{ errorMessage() }}</div>
+          }
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" placeholder="Ej. Factura de venta">
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea class="form-control" formControlName="descripcion" placeholder="Resumen del tipo documental" rows="3"></textarea>
+          </div>
+
+          <app-button [label]="isEditing() ? 'Actualizar' : 'Guardar'" icon="save" variant="success" type="submit" [disabled]="isSaving() || typeForm.invalid"></app-button>
+        </form>
+      </aside>
+    }
+  </div>
+</section>

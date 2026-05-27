@@ -1,0 +1,158 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Cuenta"
+    title="Perfil de usuario"
+    description="Consulta tu identidad, organización, roles y permisos dentro de DocuCloud."
+  ></app-section-header>
+
+  @if (errorMessage()) {
+    <div class="inline-error">{{ errorMessage() }}</div>
+  }
+  @if (successMessage()) {
+    <div class="inline-success">{{ successMessage() }}</div>
+  }
+
+  <div class="profile-grid">
+    <article class="panel">
+      <header class="panel__header">
+        <div class="profile-title">
+          <span class="profile-avatar">
+            <app-icon name="account_circle" [size]="34"></app-icon>
+          </span>
+          <div>
+            <h2>{{ currentUser()?.name || 'Usuario' }}</h2>
+            <p>{{ currentUser()?.email }}</p>
+          </div>
+        </div>
+        <app-badge [label]="roleLabel()" tone="info"></app-badge>
+      </header>
+
+      <form class="panel__body form-grid" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="form-group">
+          <label>Cedula</label>
+          <input class="form-control" [value]="currentUser()?.id" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre</label>
+          <input class="form-control" formControlName="nombre" [disabled]="!canEditProfile()">
+        </div>
+
+        <div class="form-group">
+          <label>Correo</label>
+          <input class="form-control" formControlName="email" [disabled]="!canEditProfile()">
+        </div>
+
+        @if (canEditProfile()) {
+          <div class="form-group">
+            <label>Nueva contraseña</label>
+            <input class="form-control" type="password" formControlName="password" placeholder="Opcional, mínimo 8 caracteres">
+          </div>
+          <app-button label="Guardar perfil" icon="save" variant="success" type="submit" [disabled]="profileForm.invalid || isSavingProfile()"></app-button>
+        }
+      </form>
+    </article>
+
+    <aside class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Acceso</h2>
+          <p>{{ roleDescription() }}</p>
+        </div>
+      </header>
+      <div class="panel__body">
+        <div class="info-list">
+          <div>
+            <span>Rol principal</span>
+            <strong>{{ roleLabel() }}</strong>
+          </div>
+          <div>
+            <span>Organización</span>
+            <strong>{{ currentUser()?.organizacionNombre || 'Sin organización' }}</strong>
+          </div>
+          <div>
+            <span>NIT</span>
+            <strong>{{ currentUser()?.organizacionNit || 'Sin NIT' }}</strong>
+          </div>
+          <div>
+            <span>Estado</span>
+            <strong>{{ userRecord()?.active === false ? 'Inactivo' : 'Activo' }}</strong>
+          </div>
+        </div>
+
+        <div class="role-list">
+          <h3>Roles asignados</h3>
+          @for (rol of roles(); track rol.id) {
+            <app-badge [label]="rol.rolNombre" tone="neutral"></app-badge>
+          } @empty {
+            <app-badge [label]="roleLabel()" tone="neutral"></app-badge>
+          }
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <article class="panel">
+    <header class="panel__header">
+      <div>
+        <h2>Organización</h2>
+        <p>Los administradores pueden mantener actualizada la información del tenant.</p>
+      </div>
+      <app-badge [label]="canEditOrganization() ? 'Editable' : 'Solo lectura'" [tone]="canEditOrganization() ? 'success' : 'neutral'"></app-badge>
+    </header>
+
+    <form class="panel__body org-grid" [formGroup]="orgForm" (ngSubmit)="saveOrganization()">
+      <div class="form-group">
+        <label>NIT</label>
+        <input class="form-control" [value]="organizacion()?.nit || currentUser()?.organizacionNit" disabled>
+      </div>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input class="form-control" formControlName="nombre" [disabled]="!canEditOrganization()">
+      </div>
+      <div class="form-group">
+        <label>Correo</label>
+        <input class="form-control" formControlName="email" [disabled]="!canEditOrganization()">
+      </div>
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input class="form-control" formControlName="telefono" [disabled]="!canEditOrganization()">
+      </div>
+      <div class="form-group">
+        <label>Calle</label>
+        <input class="form-control" formControlName="dirCalle" [disabled]="!canEditOrganization()">
+      </div>
+      <div class="form-group">
+        <label>Número</label>
+        <input class="form-control" formControlName="dirNumero" [disabled]="!canEditOrganization()">
+      </div>
+      <div class="form-group">
+        <label>Comuna / ciudad</label>
+        <input class="form-control" formControlName="dirComuna" [disabled]="!canEditOrganization()">
+      </div>
+
+      @if (canEditOrganization()) {
+        <app-button label="Guardar organización" icon="business" variant="success" type="submit" [disabled]="orgForm.invalid || isSavingOrg()"></app-button>
+      }
+    </form>
+  </article>
+
+  <article class="panel">
+    <header class="panel__header">
+      <div>
+        <h2>Actividad de cuenta</h2>
+        <p>Fechas relevantes del registro del usuario.</p>
+      </div>
+    </header>
+    <div class="panel__body info-list info-list--inline">
+      <div>
+        <span>Creado en</span>
+        <strong>{{ formatDate(userRecord()?.creadoEn) }}</strong>
+      </div>
+      <div>
+        <span>Actualizado en</span>
+        <strong>{{ formatDate(userRecord()?.actualizadoEn) }}</strong>
+      </div>
+    </div>
+  </article>
+</section>

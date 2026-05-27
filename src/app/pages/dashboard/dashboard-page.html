@@ -1,0 +1,82 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Panel principal"
+    title="Control documental DocuCloud"
+    description="Resumen operativo para documentos, usuarios, tareas de aprobación y notificaciones pendientes."
+    actionLabel="Nuevo documento"
+    actionIcon="upload_file"
+    (action)="createDocument()"
+  ></app-section-header>
+
+  <div class="stats-grid">
+    <app-stat-card label="Documentos" [value]="documentos().length" helper="Registros de la organización" icon="description"></app-stat-card>
+    <app-stat-card label="Usuarios activos" [value]="usuarios().length" helper="Equipo con acceso al sistema" icon="group" tone="info"></app-stat-card>
+    <app-stat-card label="Aprobados" [value]="aprobados()" helper="Documentos en estado final" icon="verified" tone="success"></app-stat-card>
+    <app-stat-card label="Tareas pendientes" [value]="pendientes()" helper="Requieren atención" icon="pending_actions" tone="warning"></app-stat-card>
+  </div>
+
+  <div class="content-grid">
+    <article class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Documentos recientes</h2>
+          <p>Últimos movimientos en el ciclo de vida documental.</p>
+        </div>
+        <app-badge label="En tiempo real" tone="info"></app-badge>
+      </header>
+      <div class="panel__body entity-list">
+        @for (documento of documentos(); track documento.id) {
+          <article class="entity-card">
+            <div class="entity-card__header">
+              <div>
+                <h3>{{ documento.titulo }}</h3>
+                <p>{{ documento.descripcion }}</p>
+              </div>
+              <app-badge [label]="documento.estadoDocumentoNombre" [tone]="documento.estadoDocumentoNombre === 'Aprobado' ? 'success' : 'warning'"></app-badge>
+            </div>
+            <div class="inline-meta">
+              <app-icon name="folder" color="var(--color-tertiary)" [size]="20"></app-icon>
+              {{ documento.tipoDocumentoNombre }}
+              <span>Versión {{ documento.version }}</span>
+              <span>{{ documento.creadoPorNombre }}</span>
+            </div>
+          </article>
+        }
+      </div>
+    </article>
+
+    <aside class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Actividad</h2>
+          <p>Alertas y tareas vigentes.</p>
+        </div>
+      </header>
+      <div class="panel__body">
+        @for (task of tareas(); track task.id) {
+          <article class="timeline-item">
+            <app-icon name="task_alt" [color]="task.estado === 'COMPLETADO' ? 'var(--color-success)' : 'var(--color-warning)'" [size]="22"></app-icon>
+            <div>
+              <strong>{{ task.pasoNombre }}</strong>
+              <p>{{ task.documentoTitulo }}</p>
+              <small>{{ task.asignadoANombre }} - vence {{ task.fechaLimite }}</small>
+            </div>
+          </article>
+        }
+        @for (notification of notificaciones(); track notification.id) {
+          <article class="timeline-item" (click)="marcarLeida(notification)" style="cursor: pointer;" title="Marcar como leída">
+            <app-icon name="mail" color="var(--color-info)" [size]="22"></app-icon>
+            <div>
+              <strong>{{ notification.plantillaNombre }}</strong>
+              <p>{{ notification.mensaje }}</p>
+              <small>{{ notification.usuarioNombre }}</small>
+            </div>
+          </article>
+        }
+        @if (notificaciones().length === 0) {
+          <p style="color: var(--color-muted); font-size: 14px;">No hay notificaciones pendientes.</p>
+        }
+      </div>
+    </aside>
+  </div>
+</section>

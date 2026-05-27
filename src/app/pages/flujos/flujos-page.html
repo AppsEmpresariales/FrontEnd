@@ -1,0 +1,159 @@
+<section class="page">
+  <app-section-header
+    eyebrow="Workflow"
+    title="Flujos de trabajo"
+    description="Configura secuencias de aprobación por tipo documental, rol requerido y estado objetivo."
+    actionLabel="Crear flujo"
+    actionIcon="account_tree"
+    (action)="toggleFlujoModal()"
+  ></app-section-header>
+
+  <div class="content-grid">
+    <article class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Flujos disponibles</h2>
+          <p>Procesos asociados a tipos documentales.</p>
+        </div>
+      </header>
+      <div class="panel__body entity-list">
+        @for (flujo of flujos(); track flujo.id) {
+          <article 
+            class="entity-card" 
+            [class.entity-card--selected]="flujo.id === selectedFlujoId()"
+            (click)="selectFlujo(flujo.id)"
+            style="cursor: pointer;"
+          >
+            <div class="entity-card__header">
+              <div>
+                <h3>{{ flujo.nombre }}</h3>
+                <p>{{ flujo.descripcion }}</p>
+              </div>
+              <app-badge [label]="flujo.active ? 'Activo' : 'Inactivo'" [tone]="flujo.active ? 'success' : 'error'"></app-badge>
+            </div>
+            <div class="inline-meta">
+              <app-icon name="description" color="var(--color-tertiary)" [size]="20"></app-icon>
+              {{ flujo.tipoDocumentoNombre }}
+              <span>{{ flujo.organizacionNombre }}</span>
+              <div style="flex-grow: 1;"></div>
+              <button title="Editar" style="background: none; border: none; padding: 4px;" (click)="$event.stopPropagation(); editFlujo(flujo)"><app-icon name="edit" color="var(--color-info)"></app-icon></button>
+              <button title="Eliminar" style="background: none; border: none; padding: 4px;" (click)="$event.stopPropagation(); deleteFlujo(flujo.id)"><app-icon name="delete" color="var(--color-error)"></app-icon></button>
+            </div>
+          </article>
+        }
+      </div>
+    </article>
+
+    <aside class="panel">
+      <header class="panel__header">
+        <div>
+          <h2>Pasos del flujo</h2>
+          <p>Orden, rol y estado objetivo.</p>
+        </div>
+      </header>
+      <div class="panel__body workflow-steps">
+        @if (selectedFlujoId()) {
+          @for (paso of pasos(); track paso.id) {
+            <article class="workflow-step" style="display: flex; gap: 16px; align-items: flex-start; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 8px;">
+            <span style="background: var(--color-bg); padding: 4px 12px; border-radius: 50%; font-weight: bold;">{{ paso.ordenPaso }}</span>
+            <div style="flex: 1;">
+              <h3 style="margin-bottom: 4px;">{{ paso.nombre }}</h3>
+              <p style="font-size: 14px; color: var(--color-muted); margin-bottom: 8px;">{{ paso.descripcion }}</p>
+              <div class="inline-meta">
+                <app-icon name="admin_panel_settings" color="var(--color-tertiary)" [size]="20"></app-icon>
+                {{ paso.rolRequeridoNombre }}
+                <app-icon name="flag" color="var(--color-info)" [size]="20"></app-icon>
+                {{ paso.objetivoEstadoNombre }}
+              </div>
+            </div>
+            </article>
+          }
+          <app-button label="Nuevo paso" icon="add" variant="secondary" (btnClick)="togglePasoModal()"></app-button>
+        } @else {
+          <p>Selecciona un flujo de trabajo para ver sus pasos.</p>
+        }
+      </div>
+    </aside>
+  </div>
+
+  @if (isFlujoModalOpen()) {
+    <div class="modal-overlay" (click)="toggleFlujoModal()">
+      <aside class="modal-content" (click)="$event.stopPropagation()">
+        <header class="panel__header">
+          <div>
+            <h2>Crear Flujo de Trabajo</h2>
+            <p>Define la estructura general.</p>
+          </div>
+          <app-button icon="close" variant="ghost" size="sm" (btnClick)="toggleFlujoModal()"></app-button>
+        </header>
+        <form class="panel__body form-grid" [formGroup]="flujoForm" (ngSubmit)="saveFlujo()">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" placeholder="Ej. Aprobación de Facturas">
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea class="form-control" formControlName="descripcion"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Tipo documental</label>
+            <select class="form-control" formControlName="tipoDocumentoId">
+              <option [ngValue]="null">Selecciona un tipo</option>
+              @for (tipo of tiposDocumento(); track tipo.id) {
+                <option [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+              }
+            </select>
+          </div>
+          <app-button label="Guardar Flujo" icon="save" variant="success" type="submit" [disabled]="isSaving() || flujoForm.invalid"></app-button>
+        </form>
+      </aside>
+    </div>
+  }
+
+  @if (isPasoModalOpen()) {
+    <div class="modal-overlay" (click)="togglePasoModal()">
+      <aside class="modal-content" (click)="$event.stopPropagation()">
+        <header class="panel__header">
+          <div>
+            <h2>Nuevo Paso de Flujo</h2>
+            <p>Agrega un nivel de aprobación.</p>
+          </div>
+          <app-button icon="close" variant="ghost" size="sm" (btnClick)="togglePasoModal()"></app-button>
+        </header>
+        <form class="panel__body form-grid" [formGroup]="pasoForm" (ngSubmit)="savePaso()">
+          <div class="form-group">
+            <label>Orden del Paso</label>
+            <input type="number" class="form-control" formControlName="ordenPaso" placeholder="Ej. 1">
+          </div>
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" class="form-control" formControlName="nombre" placeholder="Ej. Revisión de Gerencia">
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea class="form-control" formControlName="descripcion"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Rol requerido</label>
+            <select class="form-control" formControlName="rolRequeridoId">
+              <option [ngValue]="null">Selecciona un rol</option>
+              @for (rol of roles(); track rol.id) {
+                <option [ngValue]="rol.id">{{ rol.nombre }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado objetivo</label>
+            <select class="form-control" formControlName="objetivoEstadoId">
+              <option [ngValue]="null">Selecciona un estado</option>
+              @for (estado of estadosDocumento(); track estado.id) {
+                <option [ngValue]="estado.id">{{ estado.nombre }}</option>
+              }
+            </select>
+          </div>
+          <app-button label="Guardar Paso" icon="save" variant="success" type="submit" [disabled]="isSaving() || pasoForm.invalid"></app-button>
+        </form>
+      </aside>
+    </div>
+  }
+</section>

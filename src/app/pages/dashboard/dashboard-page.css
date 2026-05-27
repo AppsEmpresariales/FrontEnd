@@ -1,0 +1,24 @@
+.timeline-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5ebf0;
+}
+
+.timeline-item:last-child {
+  border-bottom: 0;
+}
+
+.timeline-item strong {
+  display: block;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 14px;
+}
+
+.timeline-item p,
+.timeline-item small {
+  color: var(--color-muted);
+  font-size: 13px;
+}
