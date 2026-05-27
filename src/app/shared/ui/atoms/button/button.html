@@ -1,0 +1,18 @@
+<button
+  class="app-button"
+  [class.app-button--secondary]="variant === 'secondary'"
+  [class.app-button--ghost]="variant === 'ghost'"
+  [class.app-button--danger]="variant === 'danger'"
+  [class.app-button--success]="variant === 'success'"
+  [class.app-button--sm]="size === 'sm'"
+  [type]="type"
+  [disabled]="disabled"
+  (click)="btnClick.emit()"
+>
+  @if (icon) {
+    <app-icon [name]="icon" [size]="size === 'sm' ? 18 : 20"></app-icon>
+  }
+  @if (label) {
+    <span>{{ label }}</span>
+  }
+</button>

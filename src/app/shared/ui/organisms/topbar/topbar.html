@@ -1,0 +1,56 @@
+<header class="topbar">
+  <app-search-bar
+    placeholder="Buscar documentos, usuarios o auditoria"
+    [live]="false"
+    (search)="globalSearch.emit($event)"
+  ></app-search-bar>
+
+  <div class="topbar__actions">
+    <div class="topbar__notifications-container">
+      <button class="topbar__icon-button" type="button" aria-label="Notificaciones" (click)="toggleNotifications()">
+        <app-icon name="notifications" color="var(--color-warning)" [size]="24"></app-icon>
+        @if (notifications().length > 0) {
+          <span class="topbar__dot"></span>
+        }
+      </button>
+
+      @if (isNotificationsOpen()) {
+        <div class="topbar__notifications-dropdown">
+          <div class="topbar__notifications-header">
+            <h4>Notificaciones</h4>
+            @if (notifications().length > 0) {
+              <button class="text-button" (click)="marcarTodasComoLeidas($event)">Marcar todas como leídas</button>
+            }
+          </div>
+          
+          <div class="topbar__notifications-list">
+            @if (notifications().length === 0) {
+              <div class="topbar__notifications-empty">
+                <app-icon name="notifications_off" color="var(--text-secondary)" [size]="32"></app-icon>
+                <p>No tienes notificaciones nuevas</p>
+              </div>
+            } @else {
+              @for (notif of notifications(); track notif.id) {
+                <div class="topbar__notification-item">
+                  <div class="topbar__notification-content">
+                    <p class="topbar__notification-message">{{ notif.mensaje }}</p>
+                    <span class="topbar__notification-time">{{ formatTime(notif.enviadaA) }}</span>
+                  </div>
+                  <button class="icon-button small" (click)="marcarLeida(notif, $event)" title="Marcar como leída">
+                    <app-icon name="check" color="var(--color-success)" [size]="18"></app-icon>
+                  </button>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <button class="topbar__profile" type="button" aria-label="Perfil de usuario" (click)="goToProfile()">
+      <app-icon name="account_circle" color="var(--color-primary)" [size]="26"></app-icon>
+      <span>{{ currentUser()?.name || 'Usuario' }}</span>
+    </button>
+    <app-button label="Salir" icon="logout" variant="ghost" size="sm" (btnClick)="logout()"></app-button>
+  </div>
+</header>

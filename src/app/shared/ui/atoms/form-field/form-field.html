@@ -1,0 +1,16 @@
+<label class="field">
+  @if (label) {
+    <span class="field__label">{{ label }}</span>
+  }
+  <input
+    class="field__input"
+    [type]="type"
+    [value]="value"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    (input)="valueChange.emit($any($event.target).value)"
+  />
+  @if (hint) {
+    <span class="field__hint">{{ hint }}</span>
+  }
+</label>

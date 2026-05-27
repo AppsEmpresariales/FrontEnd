@@ -1,0 +1,25 @@
+<aside class="sidebar" aria-label="Navegacion principal">
+  <a class="sidebar__brand" routerLink="/dashboard" aria-label="Ir al dashboard">
+    <span class="sidebar__mark">
+      <app-icon name="folder_managed" [size]="28"></app-icon>
+    </span>
+    <span>
+      <strong>DocuCloud</strong>
+      <small>Gestión documental</small>
+    </span>
+  </a>
+
+  <nav class="sidebar__nav">
+    @for (item of items(); track item.path) {
+      <a
+        class="sidebar__link"
+        [routerLink]="item.path"
+        routerLinkActive="sidebar__link--active"
+        [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }"
+      >
+        <app-icon [name]="item.icon" [size]="22"></app-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</aside>

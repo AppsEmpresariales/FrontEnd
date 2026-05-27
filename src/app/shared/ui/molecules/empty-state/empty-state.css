@@ -1,0 +1,16 @@
+.empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 34px 20px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.empty-state h3 {
+  color: var(--color-tertiary);
+}
+
+.empty-state p {
+  max-width: 420px;
+}

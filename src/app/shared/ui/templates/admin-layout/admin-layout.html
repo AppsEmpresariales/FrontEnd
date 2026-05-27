@@ -1,0 +1,9 @@
+<div class="admin-layout">
+  <app-sidebar></app-sidebar>
+  <div class="admin-layout__main">
+    <app-topbar (globalSearch)="handleGlobalSearch($event)"></app-topbar>
+    <main class="admin-layout__content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

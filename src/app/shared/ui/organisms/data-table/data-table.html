@@ -1,0 +1,57 @@
+<div class="table-card">
+  @if (rows.length > 0) {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            @for (column of columns; track column.key) {
+              <th>{{ column.label }}</th>
+            }
+            @if (view.observed || edit.observed || delete.observed) {
+              <th class="table-actions">Acciones</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows; track $index) {
+            <tr>
+              @for (column of columns; track column.key) {
+                <td>
+                  @if (isStatusColumn(column.key)) {
+                    <app-badge
+                      [label]="getCellText(row, column.key)"
+                      [tone]="badgeTone(getCell(row, column.key))"
+                    ></app-badge>
+                  } @else {
+                    {{ getCell(row, column.key) }}
+                  }
+                </td>
+              }
+              @if (view.observed || edit.observed || delete.observed) {
+                <td class="table-actions">
+                  @if (showView(row)) {
+                    <button type="button" title="Ver" (click)="view.emit(row)">
+                      <app-icon name="visibility" [size]="20"></app-icon>
+                    </button>
+                  }
+                  @if (showEdit(row)) {
+                    <button type="button" title="Editar" (click)="edit.emit(row)">
+                      <app-icon name="edit" color="var(--color-info)" [size]="20"></app-icon>
+                    </button>
+                  }
+                  @if (showDelete(row)) {
+                    <button type="button" [title]="deleteTitle" (click)="delete.emit(row)">
+                      <app-icon [name]="deleteIcon" color="var(--color-error)" [size]="20"></app-icon>
+                    </button>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <app-empty-state [title]="emptyTitle" [message]="emptyMessage"></app-empty-state>
+  }
+</div>

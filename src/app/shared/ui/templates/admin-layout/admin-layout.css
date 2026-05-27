@@ -1,0 +1,37 @@
+.admin-layout {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.admin-layout__main {
+  min-width: 0;
+}
+
+.admin-layout__content {
+  display: grid;
+  gap: 24px;
+  width: min(100%, 1360px);
+  margin: 0 auto;
+  padding: 28px;
+}
+
+.admin-layout__search-hint {
+  margin: 14px 28px 0;
+  padding: 10px 14px;
+  border: 1px solid rgb(58 124 165 / 24%);
+  border-radius: var(--radius-md);
+  background: rgb(58 124 165 / 10%);
+  color: var(--color-info);
+  font-size: 14px;
+}
+
+@media (max-width: 920px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-layout__content {
+    padding: 20px 18px;
+  }
+}

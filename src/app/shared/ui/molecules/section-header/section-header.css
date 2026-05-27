@@ -1,0 +1,28 @@
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-header__eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-secondary);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.section-header p {
+  max-width: 760px;
+  margin-top: 8px;
+  color: var(--color-muted);
+}
+
+@media (max-width: 720px) {
+  .section-header {
+    flex-direction: column;
+  }
+}

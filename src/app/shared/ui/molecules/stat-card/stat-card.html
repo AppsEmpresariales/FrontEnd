@@ -1,0 +1,17 @@
+<article
+  class="stat-card"
+  [class.stat-card--success]="tone === 'success'"
+  [class.stat-card--warning]="tone === 'warning'"
+  [class.stat-card--info]="tone === 'info'"
+>
+  <span class="stat-card__icon">
+    <app-icon [name]="icon" [size]="24"></app-icon>
+  </span>
+  <div>
+    <p class="stat-card__label">{{ label }}</p>
+    <strong class="stat-card__value">{{ value }}</strong>
+    @if (helper) {
+      <span class="stat-card__helper">{{ helper }}</span>
+    }
+  </div>
+</article>
