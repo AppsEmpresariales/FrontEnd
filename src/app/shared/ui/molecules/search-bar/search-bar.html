@@ -1,0 +1,11 @@
+<div class="search-bar">
+  <app-icon name="search" color="var(--color-muted)" [size]="20"></app-icon>
+  <input
+    type="search"
+    [value]="value"
+    [placeholder]="placeholder"
+    (input)="updateTerm($any($event.target).value)"
+    (keydown.enter)="executeSearch()"
+  />
+  <app-button label="Buscar" icon="manage_search" size="sm" variant="secondary" (btnClick)="executeSearch()"></app-button>
+</div>
